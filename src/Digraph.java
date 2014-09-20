@@ -1,9 +1,8 @@
-package directedgraph;
 import java.util.*;
 
 class Neighborhood {
-    private Collection<Arc> inArcs;
-    private Collection<Arc> outArcs;
+    private HashSet<Arc> inArcs;
+    private HashSet<Arc> outArcs;
 
     public Neighborhood() {
         inArcs  = new HashSet<Arc>();
@@ -18,28 +17,46 @@ class Neighborhood {
         outArcs.add(a);  
     }
 
-    public void deleleInArc(Arc a) {
-        inArcs.remove(a);  
+    public void deleteInArc(Arc a) {
+        for (Arc e : inArcs) {
+            if (e.equals(a)) {
+                inArcs.remove(e);
+                return;
+            }
+        }  
     }
 
     public void deleteOutArc(Arc a) {
-        outArcs.remove(a);  
+        for (Arc e : outArcs) {
+            if (e.equals(a)) {
+                outArcs.remove(e);
+                return;
+            }
+        }  
     }
 
-    public Collection<Arc> getInArcs() {
+    public HashSet<Arc> getInArcs() {
         return inArcs;  
     }
 
-    public Collection<Arc> getOutArcs() {
+    public HashSet<Arc> getOutArcs() {
         return outArcs;  
     }
 
-    public boolean containsInArc(Arc a) {
-        return inArcs.contains(a);  
+    public boolean isInArc(Arc a) {
+        for (Arc e : inArcs) { 
+            if (e.equals(a))
+                return true;
+        }
+        return false;  
     }
 
-    public boolean containsOutArc(Arc a) {
-        return outArcs.contains(a);  
+    public boolean isOutArc(Arc a) {
+        for (Arc e : outArcs) {
+            if (e.equals(a))
+                return true;
+        }   
+        return false;  
     }
 
     public int size() {
@@ -57,7 +74,7 @@ class Neighborhood {
     public Collection<Integer> getInNeighbors() {
         Collection<Integer> inNeighbors = new HashSet<Integer>();
         for (Arc a : inArcs) {
-            inNeighbors.add(a.from());  
+            inNeighbors.add(a.tail());  
         }
         
         return inNeighbors;
@@ -66,7 +83,7 @@ class Neighborhood {
     public Collection<Integer> getOutNeighbors() {
         Collection<Integer> outNeighbors = new HashSet<Integer>();
         for (Arc a : outArcs) {
-            outNeighbors.add(a.to());
+            outNeighbors.add(a.head());
         }
 
         return outNeighbors;
@@ -83,7 +100,7 @@ public class Digraph {
 
     public void addVertex(int u) {
         Neighborhood nh = new Neighborhood();
-        adjacencyList.add(u, nh);
+        adjacencyList.put(u, nh);
     }
 
     public boolean isVertex(int u) {
@@ -91,7 +108,88 @@ public class Digraph {
     }
 
     public void addArc(int u, int v) {
-          
+        if (!isVertex(u) || !isVertex(v))
+            throw new IllegalArgumentException("One endpoint is not a vertex.");
+
+        Arc e = new Arc(u, v);
+        adjacencyList.get(u).addOutArc(e);      // add e to the out-arcs set of u
+        adjacencyList.get(v).addInArc(e);       // add e to the in-arcs set of v  
     }
 
+    public boolean isArc(Arc a) {
+        int aHead = a.head();
+        return adjacencyList.get(aHead).isInArc(a);
+    }
+
+    public void deleteVertex(int v) {
+       if (!isVertex(v))
+            throw new IllegalArgumentException("Not a vertex.");
+       
+       Neighborhood nbrHood = adjacencyList.get(v);
+       HashSet<Arc> inArcs = nbrHood.getInArcs();   
+       HashSet<Arc> outArcs = nbrHood.getOutArcs();
+
+       adjacencyList.remove(v);
+
+       for (Arc e : inArcs) {
+            int tail = e.tail();
+            Neighborhood tailNbrHood = adjacencyList.get(tail);
+            tailNbrHood.deleteOutArc(e);
+       }
+
+       for (Arc e : outArcs) {
+            int head = e.head();
+            Neighborhood headNbrHood = adjacencyList.get(head);
+            headNbrHood.deleteInArc(e);
+       }
+
+    }
+
+    public void deleteArc(int u, int v) {
+        if (!isVertex(u) || !isVertex(v))
+            throw new IllegalArgumentException("One of the endpoints is not a vertex.");
+        
+        Arc e = new Arc(u,v);
+        if (!isArc(e))
+            throw new IllegalArgumentException("Not an arc.");
+        adjacencyList.get(u).deleteOutArc(e);
+        adjacencyList.get(v).deleteInArc(e);
+    }
+
+    public String toString() {
+        String graph = "";
+        for (Integer v : adjacencyList.keySet()) {
+              graph += "Vertex: " + v + "\n";
+              Neighborhood nbr = adjacencyList.get(v);
+              graph += "In arcs: ";
+              for (Arc e : nbr.getInArcs()) {
+                    graph += e.tail() + " -> " + e.head() + " "; 
+              }
+
+              graph += "\n" + "Out Arcs: ";
+              for (Arc e : nbr.getOutArcs()) {
+                    graph += e.tail() + " -> " + e.head() + " ";
+              }
+
+              graph += "\n";
+        }  
+
+        return graph;
+    }
+
+    public static void main(String[] args) {
+        Digraph d = new Digraph();
+        d.addVertex(1);
+        d.addVertex(2);
+        d.addArc(1,2);
+        d.addVertex(3);
+        d.addArc(2,3);
+        d.addVertex(4);
+        d.addArc(3,4);
+        d.addArc(4,1);
+        d.addArc(1,3);
+        //System.out.println(d.toString());
+        d.deleteVertex(3);
+        System.out.println(d.toString());
+    }
 }

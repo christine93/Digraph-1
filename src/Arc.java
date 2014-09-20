@@ -1,4 +1,3 @@
-package directedgraph;
 
 public class Arc {
 	private final int tail;			// tail of arc
@@ -29,11 +28,11 @@ public class Arc {
 		return weight;
 	}
 	
-	public int from() {
+	public int tail() {
 		return tail;
 	}
 	
-	public int to() {
+	public int head() {
 		return head;
 	}
 	
