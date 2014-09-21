@@ -138,6 +138,10 @@ public class Digraph {
         adjacencyList.get(v).deleteInArc(e);
     }
 
+    public int size() {
+        return adjacencyList.size();  
+    }
+
     public String toString() {
         String graph = "";
         for (Integer v : adjacencyList.keySet()) {
