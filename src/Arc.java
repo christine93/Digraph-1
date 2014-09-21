@@ -48,17 +48,24 @@ public class Arc {
 			return 0;
 			
 	}
-	
-	public boolean equals(Arc that) {
-		if (that == null) {
-			if (this == null)
-				return true;
-			return false;
-		}
-		
-		return (this.tail == that.tail && this.head == that.head && this.weight == that.weight);
-	}
-	
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (obj instanceof Arc) {
+            Arc e = (Arc) obj;
+            return (e.tail == tail && e.head == head && e.weight == weight);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return 2147483647 * tail + head;  
+    }
+
 	public String toString() {
 		return String.format("%d -> %d weight: %.2f", tail, head, weight);
 	}

@@ -18,21 +18,11 @@ class Neighborhood {
     }
 
     public void deleteInArc(Arc a) {
-        for (Arc e : inArcs) {
-            if (e.equals(a)) {
-                inArcs.remove(e);
-                return;
-            }
-        }  
+        inArcs.remove(a);
     }
 
     public void deleteOutArc(Arc a) {
-        for (Arc e : outArcs) {
-            if (e.equals(a)) {
-                outArcs.remove(e);
-                return;
-            }
-        }  
+        outArcs.remove(a);
     }
 
     public HashSet<Arc> getInArcs() {
@@ -44,19 +34,11 @@ class Neighborhood {
     }
 
     public boolean isInArc(Arc a) {
-        for (Arc e : inArcs) { 
-            if (e.equals(a))
-                return true;
-        }
-        return false;  
+        return inArcs.contains(a);
     }
 
     public boolean isOutArc(Arc a) {
-        for (Arc e : outArcs) {
-            if (e.equals(a))
-                return true;
-        }   
-        return false;  
+        return outArcs.contains(a);  
     }
 
     public int size() {
@@ -161,14 +143,14 @@ public class Digraph {
         for (Integer v : adjacencyList.keySet()) {
               graph += "Vertex: " + v + "\n";
               Neighborhood nbr = adjacencyList.get(v);
-              graph += "In arcs: ";
+              graph += "In arcs: \n";
               for (Arc e : nbr.getInArcs()) {
-                    graph += e.tail() + " -> " + e.head() + " "; 
+                    graph += e.toString() + ", "; 
               }
 
-              graph += "\n" + "Out Arcs: ";
+              graph += "\n" + "Out Arcs: \n";
               for (Arc e : nbr.getOutArcs()) {
-                    graph += e.tail() + " -> " + e.head() + " ";
+                    graph += e.toString() + ", ";
               }
 
               graph += "\n";
@@ -189,7 +171,7 @@ public class Digraph {
         d.addArc(4,1);
         d.addArc(1,3);
         //System.out.println(d.toString());
-        d.deleteVertex(3);
+        d.deleteArc(3,4);
         System.out.println(d.toString());
     }
 }
