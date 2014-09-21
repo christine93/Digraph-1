@@ -1,3 +1,4 @@
+package directedgraph;
 
 public class Arc {
 	private final int tail;			// tail of arc

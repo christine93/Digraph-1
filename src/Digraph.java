@@ -1,8 +1,9 @@
+package directedgraph;
 import java.util.*;
 
 class Neighborhood {
-    private Collection<Arc> inArcs;
-    private Collection<Arc> outArcs;
+    private final Collection<Arc> inArcs;
+    private final Collection<Arc> outArcs;
 
     public Neighborhood() {
         inArcs  = new HashSet<Arc>();
