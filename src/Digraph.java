@@ -1,8 +1,8 @@
 import java.util.*;
 
 class Neighborhood {
-    private HashSet<Arc> inArcs;
-    private HashSet<Arc> outArcs;
+    private Collection<Arc> inArcs;
+    private Collection<Arc> outArcs;
 
     public Neighborhood() {
         inArcs  = new HashSet<Arc>();
@@ -25,11 +25,11 @@ class Neighborhood {
         outArcs.remove(a);
     }
 
-    public HashSet<Arc> getInArcs() {
+    public Collection<Arc> getInArcs() {
         return inArcs;  
     }
 
-    public HashSet<Arc> getOutArcs() {
+    public Collection<Arc> getOutArcs() {
         return outArcs;  
     }
 
@@ -108,8 +108,8 @@ public class Digraph {
             throw new IllegalArgumentException("Not a vertex.");
        
        Neighborhood nbrHood = adjacencyList.get(v);
-       HashSet<Arc> inArcs = nbrHood.getInArcs();   
-       HashSet<Arc> outArcs = nbrHood.getOutArcs();
+       HashSet<Arc> inArcs  = (HashSet<Arc>) nbrHood.getInArcs();   
+       HashSet<Arc> outArcs = (HashSet<Arc>) nbrHood.getOutArcs();
 
        adjacencyList.remove(v);
 
@@ -140,6 +140,29 @@ public class Digraph {
 
     public int size() {
         return adjacencyList.size();  
+    }
+
+    public Collection<Integer> getVertexSet() {
+        Collection<Integer> vertexSet = new HashSet<Integer>(this.size());
+        for (Integer v : adjacencyList.keySet()) {
+            vertexSet.add(v);  
+        }  
+        
+        return vertexSet;
+    }
+
+    public Collection<Integer> getOutNeighbors(int u) {
+        if (!isVertex(u))
+            throw new IllegalArgumentException("Not a vertex.");
+
+        return adjacencyList.get(u).getOutNeighbors();  
+    }
+
+    public Collection<Integer> getInNeighbors(int u) {
+        if (!isVertex(u))
+            throw new IllegalArgumentException("Not a vertex.");
+
+        return adjacencyList.get(u).getInNeighbors();  
     }
 
     public String toString() {
